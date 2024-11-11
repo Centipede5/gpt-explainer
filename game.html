@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Guessing Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .correct { color: white; background-color: green; }
+    .incorrect { color: white; background-color: red; }
+    .word-box { padding: 8px; margin: 2px; border-radius: 4px; width: 60px; display: inline-block; text-align: center; }
+    #game-area { margin-top: 20px; }
+    body {
+            font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+        }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p class="text-center">Compete with a language model to predict words based on context! Your progress will be shown below.</p>
+    
+    <div class="text-center my-3">
+      <label for="sentence-select" class="form-label">Select a sentence:</label>
+      <select id="sentence-select" class="form-select w-50 mx-auto" onchange="loadSentence()">
+        <option value="sent1">Easy Sentence</option>
+        <option value="sent2">Moderate Sentence</option>
+        <option value="sent3">Difficult Sentence</option>
+      </select>
+    </div>
+
+    <div id="game-area" class="text-center">
+        <div id="text-row" class="my-3"></div>
+      <div id="player-row" class="my-3"></div>
+      <div id="model-row" class="my-3"></div>
+      
+      <div class="input-group my-4 w-50 mx-auto">
+        <input type="text" id="guess-input" class="form-control" placeholder="Enter your guess for the next word" />
+        <button class="btn btn-primary" onclick="makeGuess()">Submit Guess</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sentences = {
+      "sent1": { "model": "The bridge brown fox jumps over the lazy dog", "sentence": "The quick brown fox jumps over the lazy dog" },
+      "sent2": { "model": "Bats are fascinating only mammals capable of true flight flight", "sentence": "Bats are the only mammals capable of true sustained flight" },
+      "sent3": { "model": "Bats in for the sports are must meet certain standards for their , weight", "sentence": "Bats used in professional baseball games must meet specific standards for size and weight" }
+    };
+    
+    let selectedSentence = "sent1"; // Default sentence
+    let sentence, modelGuess, currentGuessIndex, playerGuesses, modelRevealed;
+
+    function loadSentence() {
+      selectedSentence = document.getElementById("sentence-select").value;
+      sentence = sentences[selectedSentence].sentence.split(" ");
+      modelGuess = sentences[selectedSentence].model.split(" ");
+      currentGuessIndex = 1;
+      playerGuesses = Array(sentence.length).fill("");
+      modelRevealed = Array(sentence.length).fill(false);
+      playerGuesses[0] = sentence[0];
+      modelRevealed[0] = true;
+      renderGuesses();
+    }
+
+    function renderGuesses() {
+      const playerRow = document.getElementById("player-row");
+      const modelRow = document.getElementById("model-row");
+      const textRow = document.getElementById("text-row");
+      playerRow.innerHTML = "<strong>Your Guesses:</strong> ";
+      modelRow.innerHTML = "<strong>Model Guesses:</strong> ";
+    textRow.innerHTML = "<strong>True Answer:</strong> ";
+
+      for (let i = 0; i < sentence.length; i++) {
+        // Player guess display
+        const playerWord = document.createElement("span");
+        playerWord.textContent = playerGuesses[i] || "_";
+        if(playerGuesses[i] === sentence[i]){
+          playerWord.className = "word-box correct";
+        } else if(playerGuesses[i] === "") {
+          playerWord.className = "word-box bg-light text-secondary";
+        } else {
+          playerWord.className = "word-box incorrect";
+          // add strikethrough and show correct answer
+            //playerWord.innerHTML = "<del>" + playerGuesses[i] + "</del><br/>" + sentence[i];
+        }
+        
+        playerRow.appendChild(playerWord);
+
+        // Model guess display (only revealed if modelRevealed is true)
+        const modelWord = document.createElement("span");
+        if (modelRevealed[i]) {
+          modelWord.className = "word-box " + (modelGuess[i] === sentence[i] ? "correct" : "incorrect");
+          modelWord.textContent = modelGuess[i];
+        } else {
+          modelWord.className = "word-box bg-light text-secondary";
+          modelWord.textContent = "_";
+        }
+        modelRow.appendChild(modelWord);
+        // True answer
+        const trueAnswer = document.createElement("span");
+        if(modelRevealed[i]){
+          trueAnswer.className = "word-box bg-light text-secondary";
+          trueAnswer.textContent = sentence[i];
+        } else {
+          trueAnswer.className = "word-box bg-light text-secondary";
+          trueAnswer.textContent = "_";
+        }
+        textRow.appendChild(trueAnswer);
+      }
+    }
+
+    function makeGuess() {
+      const guessInput = document.getElementById("guess-input");
+      const guess = guessInput.value.trim();
+      guessInput.value = "";
+
+      if (guess.toLowerCase() === sentence[currentGuessIndex].toLowerCase()) {
+        playerGuesses[currentGuessIndex] = guess;
+        modelRevealed[currentGuessIndex] = true; // Reveal the corresponding model guess
+        currentGuessIndex++;
+      } else {
+        playerGuesses[currentGuessIndex] = guess;
+        modelRevealed[currentGuessIndex] = true; // Reveal the corresponding model guess
+        currentGuessIndex++;
+      }
+
+      if (currentGuessIndex >= sentence.length) {
+      //  alert("Congratulations! You've completed the sentence!");
+      }
+
+      renderGuesses();
+    }
+    // make guess when user hits enter key in input field
+    document.getElementById("guess-input").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        makeGuess();
+      }
+    });
+
+    // Initial load
+    loadSentence();
+  </script>
+</body>
+</html>

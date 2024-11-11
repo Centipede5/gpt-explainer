@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Linear Regression</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        body {
+            font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Modeling Interactive</h2>
+        <p class="text-center">Adjust the slope and intercept to see how the line fits the data!</p>
+        
+        <!-- Sliders for Slope and Intercept -->
+        <div class="row">
+            <div class="col-md-6">
+                <label for="slopeSlider">Slope</label>
+                <input type="range" class="custom-range" id="slopeSlider" min="-20" max="20" step="0.1" value="1">
+                <span id="slopeValue">1</span>
+            </div>
+            <div class="col-md-6">
+                <label for="interceptSlider">Intercept</label>
+                <input type="range" class="custom-range" id="interceptSlider" min="-50" max="50" step="0.5" value="0">
+                <span id="interceptValue">0</span>
+            </div>
+        </div>
+        
+        <!-- Plotly graph -->
+        <div id="plot" style="height: 70vh;"></div>
+        <!-- <button class="btn btn-primary" onclick="generateData()">Generate New Data</button> -->
+    </div>
+
+    <script>
+        // Generate a random dataset with a linear correlation
+        function generateData() {
+            let x = Array.from({length: 20}, () => Math.floor(Math.random() * 10));
+            let y = x.map(xi => 15 + 2.3 * xi + (Math.random()-0.5) * 10); // y = 5x + noise
+            return { x, y };
+        }
+
+        // Initial dataset
+        let dataPoints = generateData();
+
+        function gradiantDecent(){
+            let learning_rate = 0.01;
+            let slope = 0;
+            let intercept = 0;
+            let x = dataPoints.x;
+            let y = dataPoints.y;
+            let n = x.length;
+            let epochs = 100;
+            function sum(arr){
+                return arr.reduce((a, b) => a + b, 0);
+            }
+            function epoch(){
+                for(let i = 0; i < n; i++){
+                    let y_pred = slope * x[i] + intercept;
+                    let error = y_pred - y[i];
+                    slope -= learning_rate * (2/n) * error * x[i];
+                    intercept -= learning_rate * (20/n) * error;
+                }
+                drawPlot(slope, intercept);
+                epochs -= 1;
+                setTimeout(epoch, 100);
+            }
+            epoch();
+
+        }
+
+        // Function to draw the plot with the regression line
+        function drawPlot(slope, intercept) {
+            let xValues = dataPoints.x;
+            let yValues = dataPoints.y;
+            // set sliders
+            document.getElementById("slopeSlider").value = slope;
+            document.getElementById("slopeValue").textContent = slope;
+            document.getElementById("interceptSlider").value = intercept;
+            document.getElementById("interceptValue").textContent = intercept;
+
+            // User-defined regression line
+            let regressionLine = {
+                x: [Math.min(...xValues), Math.max(...xValues)],
+                y: [
+                    slope * Math.min(...xValues) + intercept,
+                    slope * Math.max(...xValues) + intercept
+                ],
+                mode: 'lines',
+                name: 'Model',
+                line: { color: 'blue', width: 2 }
+            };
+
+            // Scatter plot for the data points
+            let scatterPlot = {
+                x: xValues,
+                y: yValues,
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Observations',
+                marker: { color: 'red', size: 8 }
+            };
+
+            // Define layout
+            let layout = {
+                title: 'Experience vs Salary',
+                xaxis: { title: 'Experience (years)' },
+                yaxis: { title: 'Salary ($/hour)' },
+                margin: { t: 50, l: 70, r: 50, b: 50 },
+                showlegend: true
+            };
+
+            // Plotly plot
+            Plotly.newPlot('plot', [scatterPlot, regressionLine], layout);
+        }
+
+        // Initialize plot
+        drawPlot(1, 0);
+
+        // Event listeners for the sliders
+        document.getElementById("slopeSlider").addEventListener("input", function () {
+            let slope = parseFloat(this.value);
+            document.getElementById("slopeValue").textContent = slope;
+            let intercept = parseFloat(document.getElementById("interceptSlider").value);
+            drawPlot(slope, intercept);
+        });
+
+        document.getElementById("interceptSlider").addEventListener("input", function () {
+            let intercept = parseFloat(this.value);
+            document.getElementById("interceptValue").textContent = intercept;
+            let slope = parseFloat(document.getElementById("slopeSlider").value);
+            drawPlot(slope, intercept);
+        });
+    </script>
+</body>
+</html>

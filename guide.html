@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Demystified</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+        }
+        h1, h2 {
+            color: #2C3E50;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ChatGPT Demystified</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Guide</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Examples</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="text-center mb-4">
+            <h1>ChatGPT Demystified</h1>
+            <p class="lead">An inside look into how ChatGPT predicts text and powers conversations.</p>
+        </header>
+
+        <!-- Section: At a Glance -->
+        <section id="at-a-glance" class="mb-5">
+            <h2>At a Glance</h2>
+            <p>
+                You may have heard of ChatGPT, a powerful language model that can generate human-like text. But how does it really work? Here's a quick overview:
+            </p>
+            <ul>
+                <li>ChatGPT learned by reading tons of text from books, websites, and other sources to understand how people use language. It doesn’t “know” things in the way people do, but it has seen many examples of language and ideas.</li>
+                <li>When you give ChatGPT a prompt, it uses patterns it learned from the data to predict the most likely next word in a sequence. This is how it generates text that seems coherent and contextually relevant.</li>
+                <li>As it predicts new words, those words get added to the context, and a new word is generated based on that </li>
+            </ul>
+            <p>
+                <!-- ChatGPT is a type of language model that generates text by predicting the most likely next word in a sequence, based on patterns it has learned from vast amounts of data. 
+                Essentially, ChatGPT takes in a prompt, analyzes its context, and determines the next word through probabilistic reasoning.
+                This approach allows it to produce responses that seem coherent and contextually relevant, making it effective in generating human-like conversations and answers. -->
+            </p>
+        </section>
+        <section id="how-it-works">
+            <h2>How ChatGPT Sees your problem</h2>
+            <p>
+                Lets play a game to understand how ChatGPT works. Each round a word of the true sentence will be revealed, and both you and a language model will attempt to predict the next word.  
+            </p>
+            <!--Add a note that this is not chatGPT, but the less powerfull llama model-->
+            
+            <iframe src="game.html" width="100%" height="500px" frameborder="0"></iframe>
+            <p>
+                <strong>Note:</strong> This is a simplified version of how ChatGPT works, using a less powerful model called Llama. The goal is to give you a hands-on experience of predicting words based on context.
+            </p>
+        </section>
+        <section id="how-it-works">
+            <h2>What is a model?</h2>
+            <p>
+                Lets imagine you want to predict someones salary in a certain role.
+                You could try to guess it based on your own intuition, but how do you know if your guess is accurate?
+                
+                A mathematical model is a representation of a system, process, or concept using mathematical concepts and language. 
+                <br/>
+                Lets make a very simple model to predict someones salary based on their years of experience. The equation will be:
+                <br/>
+                <code>salary = slope * experience + intercept</code>
+                <br/>
+                Where "slope" and "intercept" are numbers that we can adjust to make the model fit the data better. In this instance, the intercept represents the starting salary, and the slope represents how much the salary increases with each year of experience.
+            </p>
+            <h3>"Training" a model</h3>
+            <p>
+                If I told you that someone with 2 years of experience makes $18/hour, and 2 people with 5 years of experience make $25 and $30/hour, could you use that information to make a better guess?
+                This is the idea behind training. You use the relevant information you have to make a better guess.
+                <br/>
+                Lets see how this works in practice. Try adjusting the "slope" and "intercept" sliders to fit your model to the data.
+            </p>
+            <iframe src="models.html" width="100%" height="700px" frameborder="0"></iframe>
+        </section>
+        <!-- Additional Content (Placeholder for future sections) -->
+        <section id="how-it-works">
+            <h2>Under the Hood</h2>
+            <p>
+                OK, so how does ChatGPT actually predict the next word? Here's a simplified version of the process:
+            </p>
+            <ol>
+                <li>First, the context is broken into tokens. These are usually words, but can be fragments of words</li>
+                <li>Next, the model has a list of numbers it uses to represent each word. This tries to capture as much of the meaning of the word as possible</li>
+                <li>Then, the model updates the meaning of the word based on the surrounding context and the meaning of the words around it</li>
+                <li></li>
+            </ol>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
