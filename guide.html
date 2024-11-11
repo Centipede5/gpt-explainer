@@ -106,16 +106,21 @@
         </section>
         <!-- Additional Content (Placeholder for future sections) -->
         <section id="how-it-works">
-            <h2>Under the Hood</h2>
+            <h2>Under the Hood [IN PROGRESS]</h2>
             <p>
                 OK, so how does ChatGPT actually predict the next word? Here's a simplified version of the process:
             </p>
             <ol>
-                <li>First, the context is broken into tokens. These are usually words, but can be fragments of words</li>
-                <li>Next, the model has a list of numbers it uses to represent each word. This tries to capture as much of the meaning of the word as possible</li>
-                <li>Then, the model updates the meaning of the word based on the surrounding context and the meaning of the words around it</li>
-                <li></li>
+                <li>First, the text is broken into tokens. These are usually words, but can be fragments of words</li>
+                <li>Next, the model has a list of numbers it uses to represent each token. This tries to capture as much of the meaning as possible</li>
+                <li>Then, the model updates the meaning of the token based on the surrounding context and the meaning of the words around it</li>
+                <li>Now the model tries to understand the meaning of the entire text based on the meaning of each word</li>
+                <li>Finally, the model predicts the next word based on the meaning of the text so far</li>
             </ol>
+            <p>
+                This is a very simplified version of what happens under the hood. In reality, the model is much more complex and uses many more steps to predict the next word. 
+                But understanding each of these steps in more detail can help you understand how ChatGPT works and what its strengths and limitations are.
+            </p>
         </section>
     </div>
 
