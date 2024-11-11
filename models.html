@@ -25,6 +25,7 @@
         <h2 class="text-center">Modeling Interactive</h2>
         <p class="text-center">Adjust the slope and intercept to see how the line fits the data!</p>
         
+        
         <!-- Sliders for Slope and Intercept -->
         <div class="row">
             <div class="col-md-6">
@@ -41,17 +42,49 @@
         
         <!-- Plotly graph -->
         <div id="plot" style="height: 70vh;"></div>
+        <h5 id="sumres" style="display:none;position: absolute; bottom: 80px; right: 50%; transform: translate(50%, 0)">
+            <b>Sum of Residuals: 0.00</b>
+        </h5>
         <!-- <button class="btn btn-primary" onclick="generateData()">Generate New Data</button> -->
     </div>
 
     <script>
+        show_loss = false;
         // Generate a random dataset with a linear correlation
         function generateData() {
-            let x = Array.from({length: 20}, () => Math.floor(Math.random() * 10));
+            let x = Array.from({length: 20}, () => Math.random() * 10);
             let y = x.map(xi => 15 + 2.3 * xi + (Math.random()-0.5) * 10); // y = 5x + noise
             return { x, y };
         }
 
+        // listen for signal to show risiduals
+        window.addEventListener('message', function(event) {
+
+            if(event.data.type == 'show_loss'){
+                show_loss = !show_loss;
+                let intercept = parseFloat(document.getElementById("interceptSlider").value);
+                let slope = parseFloat(document.getElementById("slopeSlider").value);
+                drawPlot(slope, intercept);
+            }else if(event.data.type == 'generate_data'){
+                // show_loss = false;
+                setTimeout(function(){
+
+                
+                    dataPoints = generateData();
+                    let intercept = parseFloat(document.getElementById("interceptSlider").value);
+                    let slope = parseFloat(document.getElementById("slopeSlider").value);
+                    drawPlot(slope, intercept);
+                }, 1000);
+            }else if(event.data.type == 'start_gradient_descent'){
+                gradiantDecent();
+            }
+            // render
+            
+
+        });
+        function sum(arr){
+                return arr.reduce((a, b) => a + b, 0);
+            }
         // Initial dataset
         let dataPoints = generateData();
 
@@ -63,9 +96,7 @@
             let y = dataPoints.y;
             let n = x.length;
             let epochs = 100;
-            function sum(arr){
-                return arr.reduce((a, b) => a + b, 0);
-            }
+            
             function epoch(){
                 for(let i = 0; i < n; i++){
                     let y_pred = slope * x[i] + intercept;
@@ -75,7 +106,10 @@
                 }
                 drawPlot(slope, intercept);
                 epochs -= 1;
-                setTimeout(epoch, 100);
+                if(epochs > 0){
+                    setTimeout(epoch, 100);
+                }
+                
             }
             epoch();
 
@@ -121,9 +155,42 @@
                 margin: { t: 50, l: 70, r: 50, b: 50 },
                 showlegend: true
             };
+            
+            // show lines of loss
+            if(show_loss){
+                let loss = [];
+                for(let i = 0; i < xValues.length; i++){
+                    let y_pred = slope * xValues[i] + intercept;
+                    var color = 'red';
+                    if(y_pred > yValues[i]){
+                        color = 'green';
+                    }
+                    loss.push({
+                        x: [xValues[i], xValues[i]],
+                        y: [yValues[i], y_pred],
+                        mode: 'lines',
+                        line: {color: color, width: 1},
+                        showlegend: false
+                    });
+                }
+                // add text annotation for sum of loss
+                let sum_loss = sum(loss.map(l => Math.abs(l.y[1] - l.y[0])));
+                var element = document.getElementById("sumres");
+                element.style.display = "block";
+                element.innerHTML = "<b>Sum of Residuals: " + sum_loss.toFixed(2) + "</b>";
 
-            // Plotly plot
-            Plotly.newPlot('plot', [scatterPlot, regressionLine], layout);
+
+                document.body.appendChild(element);
+
+                
+                Plotly.newPlot('plot', [scatterPlot, regressionLine, ...loss], layout);
+                //Plotly.newPlot('plot', [scatterPlot, regressionLine, ...loss], layout);
+            }else{
+                var element = document.getElementById("sumres");
+                element.style.display = "none";
+                // Plotly plot
+                Plotly.newPlot('plot', [scatterPlot, regressionLine], layout);
+            }
         }
 
         // Initialize plot

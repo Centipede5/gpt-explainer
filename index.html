@@ -102,13 +102,53 @@
                 <br/>
                 Lets see how this works in practice. Try adjusting the "slope" and "intercept" sliders to fit your model to the data.
             </p>
-            <iframe src="models.html" width="100%" height="700px" frameborder="0"></iframe>
+            <iframe id="modeliframe" src="models.html" width="100%" height="700px" frameborder="0"></iframe>
+            <p>
+                But wait, how can a computer do this? Most people can eyeball a line and see how well it fits the data, but a computer needs a more systematic approach. 
+                <br/>
+                First we need to define what "better" means. In this case, we can say that a better model is one that makes predictions that are closer to the true values.
+                <br/>
+                Specifically, we can define the "residual" as the difference between the true value and the value the model predicts. Click the button below to see the residuals for the current model.
+                <br/>
+                <br/>
+                <button class="btn btn-primary" id="showRisiduals">Show Residuals</button>
+                <p>
+                    Now, how can we adjust the slope and intercept to make the residuals smaller? This is where "gradient descent" comes in.
+                    <br/>                    
+                </p>
+                <p>
+                    Imagine you where to make a very small adjustment to the slope and intercept. Would the residuals get smaller or larger? If they get smaller, you should keep adjusting in that direction. If they get larger, you should adjust in the opposite direction.
+                    <br/>
+                    This is the basic idea behind gradient descent. You start with a random guess for the slope and intercept, and then adjust them in the direction that makes the residuals smaller.
+                    <br/>
+                    Lets see how this works in practice. Click the button below to start the gradient descent algorithm.
+                </p>
+                <button class="btn btn-primary" id="startGradientDescent">Start Gradient Descent</button>
+                <p>
+                    Alright! now we have a model! Lets say we used the people in our team to train the model, and now we want to see how well it does on a random team within our company. This is called "testing" or "evaluating" the model.
+                </p>
+                <p>
+                    Click the button below to see how well our model does on an unseen dataset with similar characteristics.
+                </p>
+                <button class="btn btn-primary" id="testModel">Test Model</button>
+                <p>
+                    Pretty good! It seems like our model is able to predict the salary of people with a similar background to the people we used to train the model.
+                    <br/>
+                    This is the basic idea behind machine learning. You use data to train a model, and then test it on new data to see how well it generalizes.
+                    <br/>
+                    ChatGPT is vastly more complicated, but it operates on the same principle. 
+                    In its case, however, instead of 2 sliders it has over <b>1.5 billion parameters</b> that it adjusts to make the best predictions it can.
+                    As you can imagine, training a model like ChatGPT is a massive undertaking that requires a lot of data and computational power.
+
+                </p>
+            </p>
         </section>
         <!-- Additional Content (Placeholder for future sections) -->
         <section id="how-it-works">
             <h2>Under the Hood [IN PROGRESS]</h2>
             <p>
-                OK, so how does ChatGPT actually predict the next word? Here's a simplified version of the process:
+                OK, so how does ChatGPT actually predict the next word? Whats the intuition behind what these billions of parameters mean?
+                Here's a simplified version of the process:
             </p>
             <ol>
                 <li>First, the text is broken into tokens. These are usually words, but can be fragments of words</li>
@@ -123,7 +163,48 @@
             </p>
         </section>
     </div>
+    <script>
+        
+        const showRisidualsButton = document.getElementById('showRisiduals');
+        showRisidualsButton.addEventListener('click', function(e){
+            // check button
+            e.target.classList.toggle('btn-primary');
+            e.target.classList.toggle('btn-secondary');
+            e.target.innerHTML = e.target.innerHTML == 'Show Residuals' ? 'Hide Residuals' : 'Show Residuals';
+    
+            // signal iframe
+            const iframe = document.getElementById('modeliframe');
+            const message = {
+                type: 'show_loss',
+            }
+            iframe.contentWindow.postMessage(message, '*');
+            //scroll to modeliframe
+            iframe.scrollIntoView();
 
+        });
+        const startGradientDescentButton = document.getElementById('startGradientDescent');
+        startGradientDescentButton.addEventListener('click', function(e){
+            // signal iframe
+            const iframe = document.getElementById('modeliframe');
+            const message = {
+                type: 'start_gradient_descent',
+            }
+            iframe.contentWindow.postMessage(message, '*');
+            //scroll to modeliframe
+            iframe.scrollIntoView();
+        });
+        const testModelButton = document.getElementById('testModel');
+        testModelButton.addEventListener('click', function(e){
+            // signal iframe
+            const iframe = document.getElementById('modeliframe');
+            const message = {
+                type: 'generate_data',
+            }
+            iframe.contentWindow.postMessage(message, '*');
+            //scroll to modeliframe
+            iframe.scrollIntoView();
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
