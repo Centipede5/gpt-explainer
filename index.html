@@ -148,7 +148,7 @@
             <h2>Under the Hood [IN PROGRESS]</h2>
             <p>
                 OK, so how does ChatGPT actually predict the next word? Whats the intuition behind what these billions of parameters mean?
-                Here's a simplified version of the process:
+                Here's a simplified version of ChatGPT's inner workings:
             </p>
             <ol>
                 <li>First, the text is broken into tokens. These are usually words, but can be fragments of words</li>
@@ -177,7 +177,7 @@
             const message = {
                 type: 'show_loss',
             }
-            iframe.contentWindow.postMessage(message, '*');
+            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
             //scroll to modeliframe
             iframe.scrollIntoView();
 
@@ -189,7 +189,7 @@
             const message = {
                 type: 'start_gradient_descent',
             }
-            iframe.contentWindow.postMessage(message, '*');
+            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
             //scroll to modeliframe
             iframe.scrollIntoView();
         });
@@ -200,7 +200,7 @@
             const message = {
                 type: 'generate_data',
             }
-            iframe.contentWindow.postMessage(message, '*');
+            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
             //scroll to modeliframe
             iframe.scrollIntoView();
         });
