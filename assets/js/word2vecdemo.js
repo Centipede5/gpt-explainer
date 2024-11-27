@@ -44,6 +44,12 @@ var Word2VecDemo = (function() {
       ) : Word2VecUtils.mixAndMatchN(
         NUM_TO_SHOW, word2, word3, word1
       ));
+      // if exclude-inputs is checked, remove word1, word2, and word3 from answers
+      if ($s('#exclude-inputs').checked) {
+        answers = answers.filter(function(answer) {
+          return answer[0] !== word1 && answer[0] !== word2 && answer[0] !== word3;
+        });
+      }
       if (answers[0] === false) {
         $s('#eqn-table').innerHTML = 'No vector for "'+answers[1]+
           '". Try another word.';
@@ -55,10 +61,14 @@ var Word2VecDemo = (function() {
 
   function renderSimilarities(id, sims) {
     $s(id).innerHTML = '';
+    var label = "Similar"
+    if(id=="#eqn-table"){
+      label = "Match"
+    }
     sims.forEach(function(sim) {
       var tr = document.createElement('tr');
       tr.innerHTML = '<td>'+sim[0]+'</td>';
-      tr.innerHTML += '<td>'+(sim[1]*100).toFixed(2)+'% Similar</td>';
+      tr.innerHTML += '<td>'+(sim[1]*100).toFixed(2)+'% '+label+'</td>';
       $s(id).appendChild(tr);
     });
   }

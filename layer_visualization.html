@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Layer Embeddings Explorer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .embedding-container {
+            margin-top: 20px;
+        }
+        .embedding {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            color: white;
+            background-color: #007BFF;
+            position: relative;
+            opacity: 1;
+            transition: all 0.5s ease-in-out;
+        }
+        .embedding.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+  .embedding-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #tsneFrame {
+    margin: auto;
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Layer Embeddings Explorer</h1>
+
+        <div class="d-flex justify-content-center mb-3">
+            <button class="btn btn-secondary mx-2" id="prevButton" type="button">Previous Layer</button>
+            <button class="btn btn-secondary mx-2" id="playButton" type="button" style="display:none;">Play</button>
+            <button class="btn btn-primary mx-2" id="nextButton" type="button">Next Layer</button>
+        </div>
+        <div class="embedding-container" id="embeddings">
+            <iframe id="tsneFrame" src="" width="80%" height="600px" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentLayer = 0;
+        const numLayers = 8;
+
+        
+
+        // Load t-SNE visualization for the given layer
+        function loadTsneVisualization(layer) {
+            const tsneFrame = document.getElementById("tsneFrame");
+            tsneFrame.src = `tsnes/tsne_visualization_${layer}.html`;
+        }
+
+        function updateButtonColors(){
+            // secondary if not available, primary if available
+            document.getElementById("prevButton").classList.remove("btn-secondary");
+            document.getElementById("prevButton").classList.remove("btn-primary");
+            document.getElementById("prevButton").classList.add(currentLayer > 0 ? "btn-primary" : "btn-secondary");
+
+            document.getElementById("nextButton").classList.remove("btn-secondary");
+            document.getElementById("nextButton").classList.remove("btn-primary");
+            document.getElementById("nextButton").classList.add(currentLayer < numLayers - 1 ? "btn-primary" : "btn-secondary");
+        }
+        
+        // Navigate to the previous layer
+        function prevLayer() {
+            if (currentLayer > 0) {
+                currentLayer--;
+                loadTsneVisualization(currentLayer);
+            }
+            updateButtonColors();
+        }
+
+        // Navigate to the next layer
+        function nextLayer() {
+            if (currentLayer < numLayers - 1) {
+                currentLayer++;
+                loadTsneVisualization(currentLayer);
+            }
+            updateButtonColors();
+        }
+
+        // Play through the layers
+        function playLayers() {
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+                document.getElementById("playButton").textContent = "Play";
+            } else {
+                playInterval = setInterval(() => {
+                    if (currentLayer < numLayers - 1) {
+                        currentLayer++;
+                        loadTsneVisualization(currentLayer);
+                    } else {
+                        clearInterval(playInterval);
+                        playInterval = null;
+                        document.getElementById("playButton").textContent = "Play";
+                    }
+                }, 2000);
+                document.getElementById("playButton").textContent = "Pause";
+            }
+        }
+        document.getElementById("prevButton").addEventListener("click", prevLayer);
+        document.getElementById("nextButton").addEventListener("click", nextLayer);
+        document.getElementById("playButton").addEventListener("click", playLayers);
+
+        loadTsneVisualization(0);
+    </script>
+</body>
+</html>

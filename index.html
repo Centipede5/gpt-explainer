@@ -16,6 +16,7 @@
             margin-bottom: 20px;
         }
     </style>
+    <script src="data/wordvecs10000.js"></script>
 </head>
 <body>
 
@@ -151,15 +152,13 @@
                 Here's a simplified version of ChatGPT's inner workings:
             </p>
             <ol>
-                <li>First, the text is broken into tokens. These are usually words, but can be fragments of words</li>
-                <li>Next, the model has a list of numbers it uses to represent each token. This tries to capture as much of the meaning as possible</li>
-                <li>Then, the model updates the meaning of the token based on the surrounding context and the meaning of the words around it</li>
-                <li>Now the model tries to understand the meaning of the entire text based on the meaning of each word</li>
-                <li>Finally, the model predicts the next word based on the meaning of the text so far</li>
+                <li>First, the text is <b>broken into tokens</b>. These are usually words, but can be fragments of words</li>
+                <li>Next, the model tries to <b>represent each token with an embedding</b> (a list of numbers that encodes the word's meaning).</li>
+                <li>Then, the model repeatedly <b>updates the meaning</b> of each token based on the surrounding context</li>
+                <li>Finally, the model <b>predicts the next word</b> based on the meaning of the text so far</li>
             </ol>
             <p>
-                This is a very simplified version of what happens under the hood. In reality, the model is much more complex and uses many more steps to predict the next word. 
-                But understanding each of these steps in more detail can help you understand how ChatGPT works and what its strengths and limitations are.
+                Understanding each of these steps in more detail can help you understand how ChatGPT works and what its strengths and limitations are.
             </p>
             <h3>Step 1: Tokenize the text</h3>
             <p>
@@ -167,8 +166,193 @@
                 <br/>
                 Lets see how this works in practice. Enter some text in the box below and click the "Tokenize" button to see how the text is broken into tokens. You can then click the "Convert to Token IDs" button to see how the tokens are represented as numbers to be fed into the model.
             </p>
-            <iframe id="tokeniframe" src="tokenizer2.html" width="100%" height="700px" frameborder="0"></iframe>
+            <iframe id="tokeniframe" src="tokenizer2.html" width="100%" height="500px" frameborder="0"></iframe>
             <!-- Question Accordion: -->
+            <h3>Step 2: Embed the tokens</h3>
+            <p>
+                Now we have a bit of a problem. Since our language model is a mathematical function we need some way to represent these words as numbers.
+                More difficult still, we need to represent them in a way that captures their meaning so that the model can actually learn from them.
+                <br/>
+                This is where "word embeddings" come in. Word embeddings are a way to represent words as a list of numbers in a way that captures their meaning.
+                These numbers are not assigned, but learned by the model as it reads through millions of examples of text. 
+                <br/>
+                Lets start with looking at what a word embeddings for the word "cat" looks like:
+                <div id="catvec">
+
+                </div>
+                <script>
+                    const catvec = wordVecs['cat'];
+                    const catvechtml = catvec.map((v) => `<span>${v.toFixed(2)}</span>`).join(', ');
+                    document.getElementById('catvec').innerHTML = `<code style="font-size:10px">[${catvechtml}]</code>`;
+                </script>
+                <br/>
+                Ohh no. That's a lot of numbers. How can we make sense of this?
+                <br/>
+                Well maybe a good place to start is to see which words have similar embeddings. Lets see which words have embeddings that are close to the word "cat".
+                <br/>
+            </p>
+            <iframe src="word2vec.html?noWordAlgebra=1" width="100%" height="700px" frameborder="0"></iframe>
+            <p>
+                But wait there's more! The embeddings represent more than distances between words. 
+                They can also do some simple analogies if we think of them mathematically. 
+
+                For example, what does "brother" - "man" + "woman" equal? Lets see if this is encoded in these embeddings!
+            </p>
+            <iframe src="word2vec.html?noSimilarWords=1" width="100%" height="700px" frameborder="0"></iframe>
+            <p>
+                Pretty cool right? These embeddings can capture some of our intuitions about language. 
+            </p>
+            <!-- collapsed bs4 Accordian below with more information about embeddings-->
+            <div class="accordion" id="embeddingAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                      <!-- Question mark icon -->
+                        <div class="d-inline-flex align-items-center ml-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+                              </svg>
+                        </div>
+                      More about embeddings
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#embeddingAccordion">
+                    <div class="accordion-body">
+                      <p>
+                        Word embeddings are a type of word representation that allows words with similar meanings to have similar representations. 
+                        They are learned from data and are able to capture semantic relationships between words. 
+                        <br/>
+                        There are many ways to learn word embeddings, but one common method is to use a neural network to predict the context of a word based on its surrounding words. 
+                        The weights of the neural network are then used as the word embeddings.
+                        <br/>
+                        Word embeddings have many applications in natural language processing, including sentiment analysis, named entity recognition, and machine translation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <h3 >Step 3: Update the token meanings</h3>
+              <p>
+                Word embeddings are pretty neat, but you may have noticed a problem. The same word can have dramatically different meanings depending on the context.
+                <br/>
+                For example, "bat" can refer to a flying mammal, a piece of sports equipment, or a verb meaning to hit something.
+                <br/>
+                This is by far the most difficult part of the language model. In fact, this method of updating the meaning of words based on context is the main innovation of the GPT models.
+                <br/>
+                To do this, the model runs the embeddings through a series of "layers" that look at all the embeddings and update them all together. 
+                <br/>
+                You can think of this like the model assigning an initial meaning to each word, then editing each meaning to make the text make more sense as a whole.
+                <br/>
+              </p>
+              <h4>A Motivating Example</h4>
+              <p>
+                Lets think about the word "bat" again. Lets see how the model embeds the word "bat" in a variety of contexts, and see if we can separate the meanings.
+                <br/>
+                To do this, we will look at a special projection of the embeddings called "t-SNE". The exact workings are not important, but the key idea is it tries to keep distances between the embeddings on a 2 dimensional graph similar to the original distances
+              </p>
+              <iframe src="tsne_visualization.html" width="100%" height="500px" frameborder="0"></iframe>
+              <p>
+                As you can see, the model is able to separate the different meanings of the word "bat" into different regions of the graph. But how does it do this?
+                <br/>
+                Its easiest to see this by looking through each layer of the model and seeing how the embeddings change. Click the "Next Layer" button below to see how the embeddings change as they pass through the model.
+              </p>
+            <iframe src="layer_visualization.html" width="100%" height="700px" frameborder="0"></iframe>
+            <p>
+                As you can see, the embeddings change dramatically as they pass through the model, and capture more and more information about the context of the word.
+                <br/>
+                Technically, this is accomplished through a process called "attention". You can think of this as the model adjusting the meaning of a word by first deciding which other words are most important, then updating the meaning based on those words.
+            </p>
+            <!-- Info accordion with more information on attention-->
+            <div class="accordion" id="attentionAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <!-- Question mark icon -->
+                        <div class="d-inline-flex align-items-center ml-5">
+                        </div>
+                        But what is attention&nbsp;<i>really</i>&nbsp;doing?
+                    </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#attentionAccordion">
+                        <div class="accordion-body">
+                            <p>
+                                Attention is a mechanism that allows a model to focus on certain parts of the input when making predictions.
+                                <br/>
+                                In the case of language models like GPT, attention is used to decide which words are most important when updating the meaning of a word.
+                                <br/>
+                                In the below example, you can see what the model is "paying attention to" when updating the meaning of the words in a sentence.
+
+                            </p>
+                            <!-- assets/img/attention_heatmap.png correctly sized and centered with caption-->
+                            <figure class="text-center">
+                                <img src="assets/img/attention_heatmap.png" style="width:70%;" class="img-fluid" alt="Attention Heatmap">
+                                <figcaption class="text-muted">An example of an attention heatmap in a language model. 
+                                    Keep in mind this is only the first layer, and the "heads" (parts of the model that pay attention to different parts of the input) have been averaged </figcaption>
+                            </figure>
+                            <p>
+                                From this heatmap, you can see that the model updates the meaning of "bat" based on the word "baseball" (row 3 col 2) more than the word "baseball" based on the word "bat" (row 2 col 3).
+                                <br/>
+                                This aligns with our intuition, that we learn more about the meaning of "bat" from the word "baseball" than the other way around.
+                                <br/>
+                                <i>
+                                    Note: [CLS] and [SEP] are special tokens that the model uses to mark the beginning and end of a sentence. Interpreting their attention values is more difficult.
+                                </i>
+                                <br/>
+                                <br/>
+                                Looking at a single head mathematically, It consists of "query" vectors, "key" vectors, and "value" vectors. 
+                                The steps are as follows, for each query / key pair:
+                                <ol>
+                                    <li>Calculate the Query vector for each word by multiplying the word embedding by the query vectors. You can think of it like the word "asking questions" about its context </li>
+                                    <li>Calculate the Key vector for each word by multiplying the word embedding by the key vectors. You can think of it like the word "answering questions" about its context </li>
+                                </ol>
+                                After this, the next steps for each word are:
+                                <ol>
+                                    <li>Calculate the attention score for each word by taking the dot product of the query and key vectors. This tells us how much the word "cares" about the other word (how much it answers its questions)</li>
+                                    <li>Normalize the attention scores by applying a softmax function. This makes the scores add up to 1, so they can be used as weights</li>
+                                </ol>
+                                <br/>
+                                This can be very difficult to visualize, as neither the query nor key vectors are directly interpretable. But the idea is the model uses these vectors to decide which words are most important when updating the meaning of a word.
+
+                                In practice, it helps to have multiple "heads" that can capture different patterns in the data. At the end of each layer, the model combines the information from all the heads to update the meaning of each word.
+                                Below you can see what each head is paying attention to when updating the meaning of the word "bats" in the sentence "Baseball bats are about three feet long.".
+                            </p>
+                            <figure class="text-center">
+                                <img src="assets/img/attention_heads_matrix.png" style="width:70%;" class="img-fluid" alt="Attention Heatmap">
+                                <figcaption class="text-muted">
+                                    An example of what each "head" in the model is paying attention to when updating the meaning of "bats". Each row represents a different head, and each column represents a different word in the input.
+                                </figcaption>
+                            </figure>
+                            <p>
+                                For more information on attention, check out the following resources:
+                                <ul>
+                                    <li>This incredible <a href="https://www.youtube.com/watch?v=eMlx5fFNoYc">3B1B Video</a></li>
+                                    <li>Original Transformer architecture paper: <a href="https://arxiv.org/abs/1706.03762">Attention is All You Need</a></li>
+                                    <li><a href="https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/">The Illustrated Transformer</a></li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <h3>Step 4: Predict the next word</h3>
+            <p>
+                Finally, the model uses the updated meanings of the tokens to predict the next word in the sequence. 
+                This is done by running the embeddings through a final layer that converts them into probabilities over the vocabulary.
+                <br/>
+                The model then selects the word with the highest probability as the next word in the sequence.
+                <br/>
+                Lets see how this works in practice. Enter a sentence in the box below and click the "Predict Next Word" button to see what the model predicts.
+            </p>
+            <iframe src="predictor.html" width="100%" height="500px" frameborder="0"></iframe>
+        </section>
+        <section>
+            <h2>Conclusion: What Have Language Models Learned?</h2>
+            <p>
+                Under Construction
+            </p>
         </section>
     </div>
     <script>
