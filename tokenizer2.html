@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BERT 1  Tokenizer with Animation</title>
+    <style>
+        body {
+            font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .tokens {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .token {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            color: white;
+            background-color: #28a745;
+            position: relative;
+            opacity: 1;
+            transition: all 0.5s ease-in-out;
+        }
+        .token.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        .token-id {
+            background-color: #6c757d;
+        }
+    </style>
+    <script src="assets/js/processed_vocab.js"></script>
+    <script src="assets/js/tokenizer.js"></script>
+</head>
+<body>
+    <h1>Tokenization Demo</h1>
+    <div class="input-container">
+        <textarea id="inputText" placeholder="Enter your text here..."></textarea>
+        <br>
+        <button id="tokenizeButton">Tokenize</button>
+        <button id="convertButton" disabled>Convert to Token IDs</button>
+    </div>
+    <div class="tokens" id="tokens"></div>
+
+    <script>
+        let tokenizer;
+        let tokens = [];
+
+        // Load the tokenizer asynchronously
+        async function loadTokenizer() {
+            try {
+                tokenizer = await bert.loadTokenizer();
+                console.log('Tokenizer loaded successfully.');
+            } catch (error) {
+                console.error('Error loading tokenizer:', error);
+            }
+        }
+
+        // Tokenize and animate
+        async function tokenizeAndAnimate() {
+            if (!tokenizer) {
+                alert('Tokenizer is still loading. Please wait.');
+                return;
+            }
+
+            const inputText = document.getElementById("inputText").value.trim();
+            if (!inputText) {
+                alert('Please enter some text.');
+                return;
+            }
+
+            tokens = tokenizer.tokenize(inputText);
+            const tokenContainer = document.getElementById("tokens");
+
+            // Clear previous tokens
+            tokenContainer.innerHTML = "";
+
+            // Display tokens
+            tokens.forEach((tokenId, index) => {
+                const tokenSpan = document.createElement("span");
+                tokenSpan.className = "token";
+                tokenSpan.textContent = tokenizer.vocab[tokenId] || "[UNK]";
+                tokenContainer.appendChild(tokenSpan);
+            });
+
+            // Enable the "Convert to Token IDs" button
+            document.getElementById("convertButton").disabled = false;
+        }
+
+        // Convert tokens to IDs and animate
+        function convertToTokenIds() {
+            const tokenContainer = document.getElementById("tokens");
+
+            tokens.forEach((tokenId, index) => {
+                const tokenSpan = tokenContainer.children[index];
+
+                // Animation: Transform tokens into IDs
+                setTimeout(() => {
+                    tokenSpan.classList.add("hidden");
+                    setTimeout(() => {
+                        tokenSpan.textContent = tokenId;
+                        tokenSpan.classList.remove("hidden");
+                        tokenSpan.classList.add("token-id");
+                    }, 500);
+                }, index * 300); // Delay for each token
+            });
+
+            // Disable the "Convert to Token IDs" button after conversion
+            document.getElementById("convertButton").disabled = true;
+        }
+
+        // Initialize tokenizer and attach event listeners
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTokenizer();
+            document.getElementById("tokenizeButton").addEventListener("click", tokenizeAndAnimate);
+            document.getElementById("convertButton").addEventListener("click", convertToTokenIds);
+        });
+    </script>
+</body>
+</html>

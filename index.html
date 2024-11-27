@@ -161,6 +161,14 @@
                 This is a very simplified version of what happens under the hood. In reality, the model is much more complex and uses many more steps to predict the next word. 
                 But understanding each of these steps in more detail can help you understand how ChatGPT works and what its strengths and limitations are.
             </p>
+            <h3>Step 1: Tokenize the text</h3>
+            <p>
+                Tokenization is the process of breaking text into smaller pieces called tokens. These tokens can be words, subwords, or characters, depending on the model and the task.
+                <br/>
+                Lets see how this works in practice. Enter some text in the box below and click the "Tokenize" button to see how the text is broken into tokens. You can then click the "Convert to Token IDs" button to see how the tokens are represented as numbers to be fed into the model.
+            </p>
+            <iframe id="tokeniframe" src="tokenizer2.html" width="100%" height="700px" frameborder="0"></iframe>
+            <!-- Question Accordion: -->
         </section>
     </div>
     <script>
@@ -177,7 +185,7 @@
             const message = {
                 type: 'show_loss',
             }
-            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
+            iframe.contentWindow.postMessage(message, '*');
             //scroll to modeliframe
             iframe.scrollIntoView();
 
@@ -189,7 +197,7 @@
             const message = {
                 type: 'start_gradient_descent',
             }
-            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
+            iframe.contentWindow.postMessage(message, '*');
             //scroll to modeliframe
             iframe.scrollIntoView();
         });
@@ -200,7 +208,7 @@
             const message = {
                 type: 'generate_data',
             }
-            iframe.contentWindow.postMessage(message, 'https://centipede5.github.io');
+            iframe.contentWindow.postMessage(message, '*');
             //scroll to modeliframe
             iframe.scrollIntoView();
         });

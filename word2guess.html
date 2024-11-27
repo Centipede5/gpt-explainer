@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guessing Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    #plot {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="text-center">Guess the Position</h1>
+    <p class="text-center">
+      Guess the position of the hidden word based on the displayed words.
+    </p>
+    <div class="text-center mb-3">
+      <button id="helper-btn" class="btn btn-secondary">Turn On Helpers</button>
+    </div>
+    <div id="plot"></div>
+    <div id="feedback" class="mt-3 text-center"></div>
+  </div>
+  <script>
+    // Word data (unchanged)
+var tsnewordvecs = {
+    "father": [24.62, -10.10],
+    "mother": [-7.21, 34.92],
+    "uncle": [-7.86, -17.11],
+    "aunt": [-47.70, 14.32],
+    "son": [29.18, -33.68],
+    "daughter": [-31.32, 39.72],
+    "brother": [7.96, -34.79],
+    "sister": [-17.88, 58.18],
+    "grandfather": [3.08, 1.32],
+    "grandmother": [-24.27, 13.10],
+    "man": [40.52, 30.27],
+    "woman": [24.56, 45.19],
+    "king": [-38.07, -76.01],
+    "queen": [-63.12, -60.82],
+    "prince": [-15.78, -70.33],
+    "princess": [-69.79, -41.04],
+    "nephew": [-18.06, -37.11],
+    "niece": [-39.82, -9.87],
+};
+
+// Separate masculine and feminine words
+const masculine = Object.keys(tsnewordvecs).filter(word => !["mother", "aunt", "daughter", "sister", "grandmother", "woman", "queen", "princess", "niece"].includes(word));
+const feminine = Object.keys(tsnewordvecs).filter(word => !masculine.includes(word));
+
+// Pick a random word
+let hiddenWord = masculine[Math.floor(Math.random() * masculine.length)];
+let isHelpersOn = false;
+let guessPoint;
+
+// Prepare data for Plotly
+const getScatterData = () => {
+    let masculineWords = masculine.filter(word => word !== hiddenWord);
+    let feminineWords = feminine.filter(word => word !== hiddenWord);
+
+    return [
+        {
+            x: masculineWords.map(word => tsnewordvecs[word][0]),
+            y: masculineWords.map(word => tsnewordvecs[word][1]),
+            text: masculineWords,
+            textposition: 'top center',
+            mode: 'markers+text',
+            marker: { color: 'blue', size: 10 },
+            name: 'Masculine'
+        },
+        {
+            x: feminineWords.map(word => tsnewordvecs[word][0]),
+            y: feminineWords.map(word => tsnewordvecs[word][1]),
+            text: feminineWords,
+            textposition: 'top center',
+            mode: 'markers+text',
+            marker: { color: 'red', size: 10 },
+            name: 'Feminine'
+        }
+    ];
+};
+
+const addHelpers = (data) => {
+    const helpers = masculine.map((masc, i) => ({
+        x: [tsnewordvecs[masc][0], tsnewordvecs[feminine[i]][0]].filter(x => x !== tsnewordvecs[hiddenWord][0]),
+        y: [tsnewordvecs[masc][1], tsnewordvecs[feminine[i]][1]].filter(y => y !== tsnewordvecs[hiddenWord][1]),
+        mode: 'lines+markers',
+        line: { 
+            color: 'gray',
+            dash: 'dashdot',
+        },
+        marker: { 
+            symbol: 'diamond-open', 
+            size: 20,
+            color: 'gray'
+        },
+        hoverinfo: 'none',
+        showlegend: false
+    }));
+    return data.concat(helpers);
+};
+
+// Initial Plot
+let data = getScatterData();
+Plotly.newPlot('plot', data, { 
+    title: 'Guess the Position', 
+    showlegend: true,
+    legend: { orientation: 'h', yanchor: 'bottom', y: 1.02, xanchor: 'right', x: 1 }
+});
+
+// If the user clicks, add their guess as a point on the plot
+// Plotly.d3.select(".plotly").on('click', function(d, i) {
+//   var e = Plotly.d3.event;
+//   var bg = document.getElementsByClassName('bg')[0];
+//   var x = ((e.layerX - bg.attributes['x'].value + 4) / (bg.attributes['width'].value)) * (myPlot.layout.xaxis.range[1] - myPlot.layout.xaxis.range[0]) + myPlot.layout.xaxis.range[0];
+//   var y = ((e.layerY - bg.attributes['y'].value + 4) / (bg.attributes['height'].value)) * (myPlot.layout.yaxis.range[0] - myPlot.layout.yaxis.range[1]) + myPlot.layout.yaxis.range[1]
+//   if (x.between(myPlot.layout.xaxis.range[0], myPlot.layout.xaxis.range[1]) &&
+//     y.between(myPlot.layout.yaxis.range[0], myPlot.layout.yaxis.range[1])) {
+//     Plotly.extendTraces(myPlot, {
+//       x: [
+//         [x]
+//       ],
+//       y: [
+//         [y]
+//       ]
+//     }, [3]);
+//   }
+// });
+
+Plotly.d3.select(".plotly").on('click', function(d, i) {
+    var e = Plotly.d3.event;
+    var bg = document.getElementsByClassName('bg')[0];
+    var myPlot = document.getElementById('plot');
+    var x = ((e.layerX - bg.attributes['x'].value + 4) / (bg.attributes['width'].value)) * (myPlot.layout.xaxis.range[1] - myPlot.layout.xaxis.range[0]) + myPlot.layout.xaxis.range[0];
+    var y = ((e.layerY - bg.attributes['y'].value + 4) / (bg.attributes['height'].value)) * (myPlot.layout.yaxis.range[0] - myPlot.layout.yaxis.range[1]) + myPlot.layout.yaxis.range[1];
+    console.log(x, y,e.layerX, e.layerY, bg.attributes['x'].value, bg.attributes['y'].value, bg.attributes['width'].value, bg.attributes['height'].value);
+    if (x >= myPlot.layout.xaxis.range[0] && x <= myPlot.layout.xaxis.range[1] && y >= myPlot.layout.yaxis.range[1] && y <= myPlot.layout.yaxis.range[0]) {
+        guessPoint = { x, y };
+        Plotly.newPlot('plot', addHelpers(data).concat({
+            x: [x],
+            y: [y],
+            mode: 'markers',
+            marker: { color: 'black', size: 10 },
+            name: 'Guess'
+        }), { 
+            title: 'Guess the Position', 
+            showlegend: true,
+            legend: { orientation: 'h', yanchor: 'bottom', y: 1.02, xanchor: 'right', x: 1 }
+        });
+    }
+});
+document.getElementById('helper-btn').addEventListener('click', () => {
+    isHelpersOn = !isHelpersOn;
+    const btn = document.getElementById('helper-btn');
+    btn.textContent = isHelpersOn ? 'Turn Off Helpers' : 'Turn On Helpers';
+    const updatedData = isHelpersOn ? addHelpers(getScatterData()) : getScatterData();
+    Plotly.react('plot', updatedData, { 
+        title: 'Guess the Position', 
+        showlegend: true,
+        legend: { orientation: 'h', yanchor: 'bottom', y: 1.02, xanchor: 'right', x: 1 }
+    });
+});
+  </script>
+</body>
+</html>

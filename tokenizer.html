@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokenization Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+    }
+    .input-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 80%;
+      height: 100px;
+      font-size: 16px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .tokens {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .token {
+      display: inline-block;
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      border-radius: 5px;
+      color: white;
+      background-color: #28a745;
+    }
+    .token.subword {
+      background-color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <h1>BERT Tokenization Visualizer</h1>
+  <div class="input-container">
+    <textarea id="inputText" placeholder="Enter your text here..."></textarea>
+    <br>
+    <button onclick="tokenizeText()">Tokenize</button>
+  </div>
+  <div class="tokens" id="tokens"></div>
+
+  <script>
+    // Simulate WordPiece tokenizer
+    function bertTokenizer(text) {
+      // Lowercase and basic splitting
+      const basicTokens = text.toLowerCase().split(/[\s,!.?]+/).filter(Boolean);
+      const subwordPrefix = "##";
+      const tokens = [];
+      
+      basicTokens.forEach(word => {
+        // Simulate subword splitting for tokens longer than 4 chars
+        if (word.length > 4) {
+          tokens.push(word.slice(0, 4));
+          for (let i = 4; i < word.length; i += 3) {
+            tokens.push(subwordPrefix + word.slice(i, i + 3));
+          }
+        } else {
+          tokens.push(word);
+        }
+      });
+
+      return tokens;
+    }
+
+    function tokenizeText() {
+      const inputText = document.getElementById("inputText").value;
+      const tokens = bertTokenizer(inputText);
+      const tokenContainer = document.getElementById("tokens");
+
+      // Clear previous tokens
+      tokenContainer.innerHTML = "";
+
+      // Display tokens
+      tokens.forEach(token => {
+        const tokenSpan = document.createElement("span");
+        tokenSpan.className = "token";
+        if (token.startsWith("##")) {
+          tokenSpan.classList.add("subword");
+        }
+        tokenSpan.textContent = token.replace("##", "");
+        tokenContainer.appendChild(tokenSpan);
+      });
+    }
+  </script>
+</body>
+</html>
