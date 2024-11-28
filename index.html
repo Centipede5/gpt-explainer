@@ -226,7 +226,13 @@
                         There are many ways to learn word embeddings, but one common method is to use a neural network to predict the context of a word based on its surrounding words. 
                         The weights of the neural network are then used as the word embeddings.
                         <br/>
-                        Word embeddings have many applications in natural language processing, including sentiment analysis, named entity recognition, and machine translation.
+                        These word embeddings are a smaller version of the <a href="https://en.wikipedia.org/wiki/Word2vec">Word2Vec</a> embeddings, which are trained on a large corpus of text to capture the meaning of words.
+                        <br/>
+                        <i>
+                            Note: GPT does not use Word2Vec embeddings directly, Word2Vec is just a common example of word embeddings with relatively few dimensions. GPT uses embeddings with 768 dimensions, making them more computationally expensive. 
+                            <br/>
+                            Both of these phenomena (Similarity and analogies) have been demonstrated for GPT embeddings as well.
+                        </i>
                       </p>
                     </div>
                   </div>
