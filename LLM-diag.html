@@ -217,7 +217,7 @@
         </div>
         <div class="col">
             <div class="description-panel">
-                <h3>Description</h3>
+                <h3 id="description-title">Description</h3>
                 <p id="description-text">Click on an element to see its description here.</p>
             </div>
         </div>
@@ -232,6 +232,7 @@
     // Select the SVG and description elements
     const svg = document.getElementById('interactive-svg');
     const descriptionText = document.getElementById('description-text');
+	const descriptionTitle = document.getElementById('description-title');
 
     var activeElem = null;
     // Add event listeners to interactive elements
@@ -254,14 +255,15 @@
             svg.querySelectorAll('.interactive').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             descriptionText.innerHTML = marked.parse(element.getAttribute('data-description').replace(/\\n/g, '\n'));
+			descriptionTitle.innerHTML = element.textContent;
             activeElem = element;
         });
     });
 
     // Reset description on mouse leave
     svg.addEventListener('mouseleave', () => {
-        svg.querySelectorAll('.interactive').forEach(el => el.classList.remove('active'));
-        descriptionText.innerHTML = 'Hover over or click on an element to see its description here.';
+        //svg.querySelectorAll('.interactive').forEach(el => el.classList.remove('active'));
+       // descriptionText.innerHTML = 'Hover over or click on an element to see its description here.';
     });
 </script>
 </body>
