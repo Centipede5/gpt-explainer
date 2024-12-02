@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dot Product Visualization</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Embedding Vector</h5>
+                <label for="embeddingX">X: <span id="embeddingXValue">2</span></label>
+                <input type="range" class="custom-range" id="embeddingX" min="-5" max="5" step="0" value="2">
+                <label for="embeddingY">Y: <span id="embeddingYValue">3</span></label>
+                <input type="range" class="custom-range" id="embeddingY" min="-5" max="5" step="0" value="3">
+            </div>
+            <div class="col-md-6">
+                <h5>Question Vector</h5>
+                <label for="questionX">X: <span id="questionXValue">0</span></label>
+                <input type="range" class="custom-range" id="questionX" min="-1" max="1" step="0.1" value="1">
+                <label for="questionY">Y: <span id="questionYValue">0</span></label>
+                <input type="range" class="custom-range" id="questionY" min="-1" max="1" step="0.1" value="0">
+                <label for="threshold">Threshold: <span id="thresholdValue">0</span></label>
+                <input type="range" class="custom-range" id="threshold" min="0" max="10.0" step="0.1" value="0">
+                <label for="questionSelect">Select Question:</label>
+                <select id="questionSelect" class="custom-select">
+                    <option value="1,0">Is the x value positive?</option>
+                    <option value="0,1">Is the y value positive?</option>
+                    <option value="1,-1">Is the x value bigger than the y value?</option>
+                </select>
+                <h5>Answer: <span id="answer" style="color: red;">No (0)</span></h5>
+            </div>
+        </div>
+
+        <canvas id="dotProductChart" width="400" height="400"></canvas>
+        
+    </div>
+
+    <script>
+        const ctx = document.getElementById('dotProductChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Embedding Vector',
+                    data: [{x: 0, y: 0}],
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    showLine: true,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointRadius: 2
+                }, {
+                    label: 'Question Vector',
+                    data: [{x: 0, y: 0}],
+                    backgroundColor: 'rgba(54, 162, 235, 1)',
+                    showLine: true,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        min: -5,
+                        max: 5
+                    },
+                    y: {
+                        min: -5,
+                        max: 5
+                    }
+                }
+            }
+        });
+
+        function updateChart() {
+            const embeddingX = parseFloat(document.getElementById('embeddingX').value);
+            const embeddingY = parseFloat(document.getElementById('embeddingY').value);
+            const questionX = parseFloat(document.getElementById('questionX').value);
+            const questionY = parseFloat(document.getElementById('questionY').value);
+            const threshold = parseFloat(document.getElementById('threshold').value);
+
+            document.getElementById('embeddingXValue').innerText = embeddingX;
+            document.getElementById('embeddingYValue').innerText = embeddingY;
+            document.getElementById('questionXValue').innerText = questionX;
+            document.getElementById('questionYValue').innerText = questionY;
+            document.getElementById('thresholdValue').innerText = threshold;
+
+            chart.data.datasets[0].data = [{x: 0, y: 0}, {x: embeddingX, y: embeddingY}];
+            chart.data.datasets[1].data = [{x: 0, y: 0}, {x: questionX, y: questionY}];
+            chart.update();
+
+            const dotProduct = embeddingX * questionX + embeddingY * questionY;
+            const answerText = dotProduct >= threshold ? 'Yes' : 'No';
+            const answerColor = dotProduct >= threshold ? 'green' : 'red';
+            document.getElementById('answer').innerText = `Dot Product: ${dotProduct.toFixed(2)} (${answerText})`;
+            document.getElementById('answer').style.color = answerColor;
+        }
+
+        document.getElementById('embeddingX').addEventListener('input', updateChart);
+        document.getElementById('embeddingY').addEventListener('input', updateChart);
+        document.getElementById('questionX').addEventListener('input', updateChart);
+        document.getElementById('questionY').addEventListener('input', updateChart);
+        document.getElementById('questionSelect').addEventListener('change', function() {
+            const [questionX, questionY] = this.value.split(',').map(parseFloat);
+            document.getElementById('questionX').value = questionX;
+            document.getElementById('questionY').value = questionY;
+            updateChart();
+        });
+        document.getElementById('threshold').addEventListener('input', updateChart);
+
+        updateChart();
+    </script>
+</body>
+</html>

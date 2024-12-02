@@ -86,8 +86,8 @@
             <h2>What is a model?</h2>
             <p>
                 Lets imagine you want to predict someones salary in a certain role.
-                You could try to guess it based on your own intuition, but how do you know if your guess is accurate?
-                
+                You could try to guess it based on your own intuition, but how do you know if your guess is justified?
+                <br/>
                 A mathematical model is a representation of a system, process, or concept using mathematical concepts and language. 
                 <br/>
                 Lets make a very simple model to predict someones salary based on their years of experience. The equation will be:
@@ -114,7 +114,7 @@
                 <br/>
                 <button class="btn btn-primary" id="showRisiduals">Show Residuals</button>
                 <p>
-                    Now, how can we adjust the slope and intercept to make the residuals smaller? This is where "gradient descent" comes in.
+                    Now, how can we adjust the slope and intercept to make the residuals closer to 0? This is where "gradient descent" comes in.
                     <br/>                    
                 </p>
                 <p>
@@ -122,15 +122,75 @@
                     <br/>
                     This is the basic idea behind gradient descent. You start with a random guess for the slope and intercept, and then adjust them in the direction that makes the residuals smaller.
                     <br/>
+                    <!--Accordion with information on backpropegation-->
+                <div class="accordion" id="backpropAccordion">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                          <!-- Question mark icon -->
+                            <div class="d-inline-flex align-items-center ml-5">
+                            </div>
+                            More about Model Training
+                        </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#backpropAccordion">
+                            <div class="accordion-body">
+                                <p>
+                                    Gradient descent is a very simple but powerful algorithm that is used to optimize the parameters of a model.
+                                    <br/>
+                                    However, it has a number of limitations on its own and has been extended in many ways to make it more powerful.
+                                    <br/>
+                                    <h5>Limitation 1: Gradient Calculation</h5>
+                                    One of the key challenges is getting this "gradient" (the direction we should adjust the parameters). In our simple model we can "make tiny adjustments" and re-run it but in more complex models this is not feasible.
+                                    <br/>
+                                    This is where "backpropagation" comes in. Backpropagation is a method used to calculate the gradient of very complicated, multi-layered models like ChatGPT.
+                                    <br/>
+                                    The basic idea is to calculate the gradient of the output of the model with respect to each parameter in the model. This is done by using the chain rule from calculus to calculate the gradient of each layer with respect to the layer before it.
+                                    <br/>
+                                    This is a very difficult concept to understand, but it is the key to training models like ChatGPT.
+                                    <br/>
+                                    Here are some resources to learn more about backpropagation:
+                                    <ul>
+                                        <li><a href="https://www.youtube.com/watch?v=Ilg3gGewQ5U">3Blue1Brown Video</a></li>
+                                        <li><a href="https://xnought.github.io/backprop-explainer/">Visual Explanation</a></li>
+                                    </ul>
+                                    <h5>Limitation 2: Local Minima</h5>
+                                    Another key limitation of gradient descent (and residual-minimizing training in general) is that it can get stuck in local minima. This is when the model finds a set of parameters that are better than the ones immediately next to it, but not as good as the best possible set of parameters.
+                                    <br/>
+                                    You can imagine local minima as a valley in a mountain range. If you start at the bottom of a valley, every direction you walk will take you up the mountain. But if you want to get to the lowest possible point on earth, you will have to climb out of the valley and find a new one.
+                                    <br/>
+                                    This is usually accomplished by more complicated optimization algorithms like "Adam" or "RMSProp".
+                                    <br/>
+                                    <h5>Limitation 3: Overfitting</h5>
+                                    A final major limitation of gradient descent is that it can lead to "overfitting". This is when the model learns the training data too well, and is unable to generalize to new data.
+                                    <br/>
+                                    You can think of this as a student who memorizes the answers to a test, but doesn't understand the underlying concepts. They will do well on that test, but will struggle with new questions.
+                                    <br/>
+                                    This is usually addressed by using more data, or by using "regularization" techniques that penalize the model for being too complex.
+                                    <br/>
+                                    The reason penalizing complexity works is the model doesn't have enough "room" to memorize the training data, and is forced to learn the underlying patterns.
+                                    <br/>
+                                    For example, in our salary model, if we had added a bunch of extra parameters (like the number of letters in the persons name, the color of their shoes etc) the model could have made a perfect prediction on our initial data by forming a hyperplane that connects every point, and has perfect accuracy.
+                                    <br/>
+                                    Mathematically, this is done by adding a term to the loss function that penalizes the model for having large weights. This makes the model prefer simpler explanations that generalize better.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     Lets see how this works in practice. Click the button below to start the gradient descent algorithm.
                 </p>
                 <button class="btn btn-primary" id="startGradientDescent">Start Gradient Descent</button>
                 <p>
-                    Alright! now we have a model! Lets say we used the people in our team to train the model, and now we want to see how well it does on a random team within our company. This is called "testing" or "evaluating" the model.
+                    Alright! now we have a trained model! 
+                    Lets say we used the people in our team to train the model, 
+                    and now we want to see how well it does on a random team within our company. This is called "testing" or "evaluating" the model.
+                    This is an especially important step because <b>models with predictive power</b> are 
                 </p>
                 <p>
                     Click the button below to see how well our model does on an unseen dataset with similar characteristics.
                 </p>
+
                 <button class="btn btn-primary" id="testModel">Test Model</button>
                 <p>
                     Pretty good! It seems like our model is able to predict the salary of people with a similar background to the people we used to train the model.
@@ -146,7 +206,7 @@
         </section>
         <!-- Additional Content (Placeholder for future sections) -->
         <section id="how-it-works">
-            <h2>Under the Hood [IN PROGRESS]</h2>
+            <h2>Under the Hood</h2>
             <p>
                 OK, so how does ChatGPT actually predict the next word? Whats the intuition behind what these billions of parameters mean?
                 Here's a simplified version of ChatGPT's inner workings:
@@ -155,6 +215,7 @@
                 <li>First, the text is <b>broken into tokens</b>. These are usually words, but can be fragments of words</li>
                 <li>Next, the model tries to <b>represent each token with an embedding</b> (a list of numbers that encodes the word's meaning).</li>
                 <li>Then, the model repeatedly <b>updates the meaning</b> of each token based on the surrounding context</li>
+                <li>Each time it updates the meaning, it will also <b>bake world knowledge</b> into the meaning</li>
                 <li>Finally, the model <b>predicts the next word</b> based on the meaning of the text so far</li>
             </ol>
             <p>
@@ -201,6 +262,9 @@
             <iframe src="word2vec.html?noSimilarWords=1" width="100%" height="700px" frameborder="0"></iframe>
             <p>
                 Pretty cool right? These embeddings can capture some of our intuitions about language. 
+                <br/>
+                More precisely, <b>directions in these embeddings encode properties of the words</b>. 
+                This is why "brother" - "sister" is very similar to "man" - "woman". They are both encoding the concept of gender.
             </p>
             <!-- collapsed bs4 Accordian below with more information about embeddings-->
             <div class="accordion" id="embeddingAccordion">
@@ -256,7 +320,7 @@
               <p>
                 Lets think about the word "bat" again. Lets see how the model embeds the word "bat" in a variety of contexts, and see if we can separate the meanings.
                 <br/>
-                To do this, we will look at a special projection of the embeddings called "t-SNE". The exact workings are not important, but the key idea is it tries to keep distances between the embeddings on a 2 dimensional graph similar to the original distances
+                To do this, we will look at a special projection of the embeddings called "t-SNE". The exact workings are not important, but the key idea is it tries to keep distances and structure between the embeddings on a 2 dimensional graph similar to the original distances
               </p>
               <iframe src="tsne_visualization.html" width="100%" height="500px" frameborder="0"></iframe>
               <p>
@@ -343,7 +407,100 @@
                 </div>
             </div>
             <br/>
-            <h3>Step 4: Predict the next word</h3>
+            <h3>Step 4: Bake in world knowledge</h3>
+            <p>
+                Okay, so the model can update the meaning of words based on context. 
+                But there is much more to language than just understanding sentences on their own. 
+                <br/>
+                For example, if I say "Michael Jordan is the greatest player of all time" you probably know I'm talking about basketball, even if I never mentioned the sport.
+                <br/>
+                Some of this knowledge is already present in the embeddings, such as capitol - country relationships.
+                <br/>
+                But there is way too much information to cram into even very large embeddings. 
+                This is where the models "MLP" (Multi Layer Perceptron) layer comes in.
+                <br/>
+            </p>
+            <h4>Steps of adding this information</h4>
+            <p>
+                The model is really doing 2 things in this layer. The first is asking a series of questions about the current embeddings, and the second is adding that information into the embeddings.
+                <br/>
+                These questions are <i>almost</i> yes / no. The primary reason they are not is to allow the model to train more effectively by making small adjustments.
+                <br/>
+                Some of examples of questions the model might "ask the embeddings" in the first layer are:
+                <ul>
+                    <li>Is this Micheal Jordan?</li>
+                    <li>Is this the Soviet Union in 1970?</li>
+                    <li>Is this "The Godfather"</li>
+                    <li>Is this a bat that flies?</li>
+                </ul>                
+                <b>Note that these are questions that can be answered with only the sentence itself</b>.
+                <br/>
+                The model then uses its "knowledge" to construct new embeddings, that add the additional world information to the embeddings.
+                <br/>
+
+
+                <!-- To both bake in information and update the embeddings accordingly this layer starts with "asking questions".
+                <br/>
+                More exactly, this is is done by looking for certain patterns in the embeddings like "Michael Jordan". at this point, the embeddings capture their relation but <b>not the meaning of the relation</b>.
+                <br/>
+                This is like if you told someone from 1900 about "Michael Jordan". They would know that this is a person, but not anything else.
+                <br/>
+                The model "knows" in this layer, that certain relationships have extra information.
+                <br/>
+                Mathematically, "questions" are "asked" of the embeddings by seeing how similar the embedding is to an embedding that represents the relationship in question. 
+                <br/>
+                Interpreting these questions is almost impossible, since they are learned from data and do not nessisarily have an easy interpretation like "is this Michael Jordan?". 
+                <br/> -->
+            </p>
+            <!-- Accordian labeled "How do you "ask a question" mathematically?"-->
+            <div class="accordion" id="questionAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <!-- Question mark icon -->
+                        <div class="d-inline-flex align-items-center ml-5">
+                        </div>
+                        How do you "ask a question" mathematically?
+                    </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#questionAccordion">
+                        <div class="accordion-body">
+                            <p>
+                                One of the the foundations of neural networks is "matrix multiplication". This is where all the processing actually happens. 
+                                <br/>
+                                Since the embeddings are a list of numbers (known as a vector), these matrix multiplications can be thought of as a series of "dot products" between the rows of the matrix and the embedding.
+                                <br/>
+                                A dot product is a way to multiply two vectors together to get a single number. This number represents how similar the two vectors are.
+                                <br/>
+                                So to "ask a question" of the embeddings, the model multiplies the embeddings by a matrix that represents the question.
+                                <br/>
+                                The result is a list of numbers that represent how similar the embeddings are to the question. This is then used to update the embeddings.
+                                <br/>
+                                After these dot products are calculated, they are passed through a function which throws away negative values. This is called a "ReLU" function, and is used to convert these similarities into almost yes / no answers.
+                                <br/>
+                                <br/>
+                                <h5>A Simplified Example</h5>
+                                In 2 dimensions, you could imagine the embedding as a line pointing from the center in a certain direction. 
+                                <br/>
+                                You can then imagine a question as a line pointing in a different direction. The dot product of these two lines will be greater the more similar the two lines are.
+                                <br/>
+                                See the visualization below to play around with this idea.
+                            </p>
+                            <iframe src="dot_product.html" width="100%" height="500px" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            <p>
+                As the model goes through more layers, it can ask more complex questions and work with information integrated from previous layers.
+                <br/>
+                The actual questions asked by the model are very difficult to interpret directly, but we can create our own questions and see if the model can answer them.
+                <br/>
+                This is easiest if we just focus on names, since the correct interpretation of them is almost entirely dependant on prior knowledge.
+                <br/>
+
+            </p>
+
+            <h3>Step 5: Predict the next word</h3>
             <p>
                 Finally, the model uses the updated meanings of the tokens to predict the next word in the sequence. 
                 This is done by running the embeddings through a final layer that converts them into probabilities over the vocabulary.
@@ -353,6 +510,15 @@
                 Lets see how this works in practice. Enter a sentence in the box below and click the "Predict Next Word" button to see what the model predicts.
             </p>
             <iframe src="predictor.html" width="100%" height="500px" frameborder="0"></iframe>
+            <h3>Putting it All Together</h3>
+            <p>
+                Throughout this explanation, we have glazed over many of the exact details of how the model works. 
+                <br/>
+                However, If you understood everything up to this point, I believe you can understand the basic idea of how ChatGPT works.
+                <br/>
+                Below is a complete interactive diagram of the model, where you can see exactly what happens at each layer.
+            </p>
+            <iframe src="model.html" width="100%" height="700px" frameborder="0"></iframe>
         </section>
         <section>
             <h2>Conclusion: What Have Language Models Learned?</h2>
@@ -362,7 +528,11 @@
         </section>
     </div>
     <script>
-        
+        var pushOrigin = '*'
+        // if we are on centipede5.github.io updata
+        if (window.location.hostname == 'centipede5.github.io') {
+            pushOrigin = 'https://centipede5.github.io'
+        }
         const showRisidualsButton = document.getElementById('showRisiduals');
         showRisidualsButton.addEventListener('click', function(e){
             // check button
@@ -375,7 +545,7 @@
             const message = {
                 type: 'show_loss',
             }
-            iframe.contentWindow.postMessage(message, 'centipede5.github.io');
+            iframe.contentWindow.postMessage(message, pushOrigin);
             //scroll to modeliframe
             iframe.scrollIntoView();
 
@@ -387,7 +557,7 @@
             const message = {
                 type: 'start_gradient_descent',
             }
-            iframe.contentWindow.postMessage(message, 'centipede5.github.io');
+            iframe.contentWindow.postMessage(message, pushOrigin);
             //scroll to modeliframe
             iframe.scrollIntoView();
         });
@@ -398,7 +568,7 @@
             const message = {
                 type: 'generate_data',
             }
-            iframe.contentWindow.postMessage(message, 'centipede5.github.io');
+            iframe.contentWindow.postMessage(message, pushOrigin);
             //scroll to modeliframe
             iframe.scrollIntoView();
         });

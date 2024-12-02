@@ -40,18 +40,14 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center">Layer Embeddings Explorer</h1>
+    <h1 class="text-center">Layer Embeddings Explorer</h1>
 
-        <div class="d-flex justify-content-center mb-3">
-            <button class="btn btn-secondary mx-2" id="prevButton" type="button">Previous Layer</button>
-            <button class="btn btn-secondary mx-2" id="playButton" type="button" style="display:none;">Play</button>
-            <button class="btn btn-primary mx-2" id="nextButton" type="button">Next Layer</button>
-        </div>
-        <div class="embedding-container" id="embeddings">
-            <iframe id="tsneFrame" src="" width="80%" height="600px" frameborder="0"></iframe>
-        </div>
+    <div class="d-flex justify-content-center mb-3">
+        <button class="btn btn-secondary mx-2" id="prevButton" type="button">Previous Layer</button>
+        <button class="btn btn-secondary mx-2" id="playButton" type="button" style="display:none;">Play</button>
+        <button class="btn btn-primary mx-2" id="nextButton" type="button">Next Layer</button>
     </div>
+    <iframe id="tsneFrame" src="" width="100%" height="600px" frameborder="0"></iframe>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
