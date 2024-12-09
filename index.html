@@ -75,6 +75,8 @@
         <header class="text-center mb-4">
             <h1>ChatGPT Demystified</h1>
             <p class="lead">An inside look into how ChatGPT predicts text and powers conversations.</p>
+            <!-- add citation to Language Models are Few-Shot Learners -->
+            <p class="text-muted"><i>Based on the paper <a href="https://arxiv.org/abs/2005.14165">"Language Models are Few-Shot Learners"</a> by Tom B. Brown et al.</i></p>
         </header>
 
         <!-- Section: At a Glance -->
@@ -283,8 +285,12 @@
             <ol>
                 <li>First, the text is <b>broken into tokens</b>. These are usually words, but can be fragments of words</li>
                 <li>Next, the model tries to <b>represent each token with an embedding</b> (a list of numbers that encodes the word's meaning).</li>
-                <li>Then, the model repeatedly <b>updates the meaning</b> of each token based on the surrounding context</li>
-                <li>Each time it updates the meaning, it will also <b>bake world knowledge</b> into the meaning</li>
+                <li>Then, the model repeatedly 
+                    <ol>
+                        <li><b>updates the meaning</b> of each token based on the surrounding context</li>
+                        <li>Each time it updates the meaning, it will also <b>bake world knowledge</b> into the meaning</li>
+                    </ol>   
+                </li>
                 <li>Finally, the model <b>predicts the next word</b> based on the meaning of the text so far</li>
             </ol>
             <p>
