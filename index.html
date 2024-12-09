@@ -15,6 +15,30 @@
         .navbar {
             margin-bottom: 20px;
         }
+        .highlight-system {
+            background-color: orange;
+            font-weight: bold;
+        }
+        .highlight-user {
+            background-color: lightblue;
+        }
+        .highlight-agent {
+            background-color: lightgreen;
+        }
+        .markup {
+            background-color: rgb(65, 65, 254);
+            font-weight: bold;
+        }
+        .next-word {
+            background-color: pink;
+        }
+        pre {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
     </style>
     <script src="data/wordvecs10000.js"></script>
 </head>
@@ -55,7 +79,52 @@
 
         <!-- Section: At a Glance -->
         <section id="at-a-glance" class="mb-5">
-            <h2>At a Glance</h2>
+            <h1>How does ChatGPT work?</h1>
+    <p>ChatGPT uses three essential steps to respond to user prompts.</p>
+    <h3>1. Templating</h3>
+    <p>
+        First, your input and the conversation history are converted into a structured format that the model can understand. 
+        The template consists of a piece of text describing how the model should behave (called the <span class="highlight-system">system prompt</span>) and a representation of the conversation history (past <span class="highlight-user">prompts</span> and <span class="highlight-system">responses</span>, and <span class="markup">markup</span> to indicate structure). Here is an example of what that might look like:
+    </p>
+    <pre>
+        <span class="markup">[System]</span> <span class="highlight-system">The following is a conversation between a helpful, knowledgeable AI agent and a user:</span>
+        <span class="markup">[User]</span> <span class="highlight-user">Respond with a single suggestion of something I could make for dinner</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Lasagna</span>
+        <span class="markup">[User]</span> <span class="highlight-user">How would I make this?</span>
+        <span class="markup">[Agent]</span> 
+    </pre>
+    <h3>2. Generation</h3>
+    <p>
+        Second, ChatGPT uses a predictive language model to choose the most likely <span class="next-word">next word</span> in this script, based on the preceding words. In the above example, “First,” “Here,” and “To” might be used. This is then appended to the conversation text:
+    </p>
+    <pre>
+        <span class="markup">[System]</span> <span class="highlight-system">The following is a conversation between a helpful, knowledgeable AI agent and a user:</span>
+        <span class="markup">[User]</span> <span class="highlight-user">Respond with a single suggestion of something I could make for dinner</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Lasagna</span>
+        <span class="markup">[User]</span> <span class="highlight-user">How would I make this?</span>
+        <span class="markup">[Agent]</span> <span class="next-word">Here</span>
+    </pre>
+    <p>
+        Now this new text is fed back into the model and the next word is predicted again:
+    </p>
+    <pre>
+        <span class="markup">[System]</span> <span class="highlight-system">The following is a conversation between a helpful, knowledgeable AI agent and a user:</span>
+        <span class="markup">[User]</span> <span class="highlight-user">Respond with a single suggestion of something I could make for dinner</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Lasagna</span>
+        <span class="markup">[User]</span> <span class="highlight-user">How would I make this?</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Here </span><span class="next-word">is</span>
+    </pre>
+    <p>
+        This process repeats until the model predicts a special “word” called <strong>End Of Sequence</strong> (or <code>&lt;EOS&gt;</code>), which indicates the model’s response is complete.
+    </p>
+    <pre>
+        <span class="markup">[System]</span> <span class="highlight-system">The following is a conversation between a helpful, knowledgeable AI agent and a user:</span>
+        <span class="markup">[User]</span> <span class="highlight-user">Respond with a single suggestion of something I could make for dinner</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Lasagna</span>
+        <span class="markup">[User]</span> <span class="highlight-user">How would I make this?</span>
+        <span class="markup">[Agent]</span> <span class="highlight-agent">Here is a recipe for lasagna: https://thecozycook.com/easy-lasagna-recipe/</span><span class="next-word">&lt;EOS&gt;</span>
+    </pre>
+            <!-- <h2>At a Glance</h2>
             <p>
                 You may have heard of ChatGPT, a powerful language model that can generate human-like text. But how does it really work? Here's a quick overview:
             </p>
@@ -63,7 +132,7 @@
                 <li>ChatGPT learned by reading tons of text from books, websites, and other sources to understand how people use language. It doesn’t “know” things in the way people do, but it has seen many examples of language and ideas.</li>
                 <li>When you give ChatGPT a prompt, it uses patterns it learned from the data to predict the most likely next word in a sequence. This is how it generates text that seems coherent and contextually relevant.</li>
                 <li>As it predicts new words, those words get added to the context, and a new word is generated based on that </li>
-            </ul>
+            </ul> -->
             <p>
                 <!-- ChatGPT is a type of language model that generates text by predicting the most likely next word in a sequence, based on patterns it has learned from vast amounts of data. 
                 Essentially, ChatGPT takes in a prompt, analyzes its context, and determines the next word through probabilistic reasoning.
@@ -71,9 +140,9 @@
             </p>
         </section>
         <section id="how-it-works">
-            <h2>How ChatGPT Sees your problem</h2>
+            <h2>What is a language model?</h2>
             <p>
-                Lets play a game to understand how ChatGPT works. Each round a word of the true sentence will be revealed, and both you and a language model will attempt to predict the next word.  
+                Lets play a game to understand how the language model powering ChatGPT works. Each round a word of the true sentence will be revealed, and both you and a language model will attempt to predict the next word.  
             </p>
             <!--Add a note that this is not chatGPT, but the less powerfull llama model-->
             
