@@ -1,4 +1,4 @@
-  ChatGPT Demystified  body { font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif; } h1, h2 { color: #2C3E50; } .navbar { margin-bottom: 20px; }
+  ChatGPT Demystified  body { font-family: "warnock-pro", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif; } h1, h2 { color: #2C3E50; } .navbar { margin-bottom: 20px; } .highlight-system { background-color: orange; font-weight: bold; } .highlight-user { background-color: lightblue; } .highlight-agent { background-color: lightgreen; } .markup { background-color: rgb(65, 65, 254); font-weight: bold; } .next-word { background-color: pink; } pre { padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; overflow-x: auto; }
 
 [ChatGPT Demystified](#)
 
@@ -12,19 +12,66 @@ ChatGPT Demystified
 
 An inside look into how ChatGPT predicts text and powers conversations.
 
-At a Glance
------------
+_Based on the paper ["Language Models are Few-Shot Learners"](https://arxiv.org/abs/2005.14165) by Tom B. Brown et al._
 
-You may have heard of ChatGPT, a powerful language model that can generate human-like text. But how does it really work? Here's a quick overview:
+Introduction
+============
 
-*   ChatGPT learned by reading tons of text from books, websites, and other sources to understand how people use language. It doesn’t “know” things in the way people do, but it has seen many examples of language and ideas.
-*   When you give ChatGPT a prompt, it uses patterns it learned from the data to predict the most likely next word in a sequence. This is how it generates text that seems coherent and contextually relevant.
-*   As it predicts new words, those words get added to the context, and a new word is generated based on that
+ChatGPT is a powerful language model that can generate human-like text. But how does it really work? In this guide, we'll take a deep dive into the inner workings of ChatGPT and explore the key concepts that allow it to generate coherent and context-aware responses.
 
-How ChatGPT Sees your problem
------------------------------
+Ever wondered how ChatGPT crafts its responses or maintains fluid conversations? This guide dives into the mechanics of ChatGPT, offering a simplified look at how it transforms text into coherent, context-aware replies. Drawing inspiration from the groundbreaking research paper "Language Models are Few-Shot Learners" by Tom B. Brown et al. (which describes how GPT-3, the precursor to ChatGPT was created) this guide breaks down the essential steps that ChatGPT uses to generate text.
 
-Lets play a game to understand how ChatGPT works. Each round a word of the true sentence will be revealed, and both you and a language model will attempt to predict the next word.
+From structuring inputs to predicting text, ChatGPT relies on three essential steps to deliver its responses. Whether you’re a tech enthusiast or simply curious about how AI works, this guide will shed light on the fascinating inner workings of language models. We’ll also introduce a fun, interactive way to grasp the concept of a language model—playing a prediction game that mirrors how ChatGPT thinks. By the end, you’ll gain a deeper appreciation for the science behind conversational AI and its role in shaping modern interactions.
+
+How does ChatGPT work?
+======================
+
+ChatGPT uses three essential steps to respond to user prompts.
+
+### 1\. Templating
+
+First, your input and the conversation history are converted into a structured format that the model can understand. The template consists of a piece of text describing how the model should behave (called the system prompt) and a representation of the conversation history (past prompts and responses, and markup to indicate structure). Here is an example of what that might look like:
+
+        \[System\] The following is a conversation between a helpful, knowledgeable AI agent and a user:
+        \[User\] Respond with a single suggestion of something I could make for dinner
+        \[Agent\] Lasagna
+        \[User\] How would I make this?
+        \[Agent\] 
+    
+
+### 2\. Generation
+
+Second, ChatGPT uses a predictive language model to choose the most likely next word in this script, based on the preceding words. In the above example, “First,” “Here,” and “To” might be used. This is then appended to the conversation text:
+
+        \[System\] The following is a conversation between a helpful, knowledgeable AI agent and a user:
+        \[User\] Respond with a single suggestion of something I could make for dinner
+        \[Agent\] Lasagna
+        \[User\] How would I make this?
+        \[Agent\] Here
+    
+
+Now this new text is fed back into the model and the next word is predicted again:
+
+        \[System\] The following is a conversation between a helpful, knowledgeable AI agent and a user:
+        \[User\] Respond with a single suggestion of something I could make for dinner
+        \[Agent\] Lasagna
+        \[User\] How would I make this?
+        \[Agent\] Here is
+    
+
+This process repeats until the model predicts a special “word” called **End Of Sequence** (or `<EOS>`), which indicates the model’s response is complete.
+
+        \[System\] The following is a conversation between a helpful, knowledgeable AI agent and a user:
+        \[User\] Respond with a single suggestion of something I could make for dinner
+        \[Agent\] Lasagna
+        \[User\] How would I make this?
+        \[Agent\] Here is a recipe for lasagna: https://thecozycook.com/easy-lasagna-recipe/<EOS>
+    
+
+What is a language model?
+-------------------------
+
+Lets play a game to understand how the language model powering ChatGPT works. Each round a word of the true sentence will be revealed, and both you and a language model will attempt to predict the next word.
 
 **Note:** This is a simplified version of how ChatGPT works, using a less powerful model called Llama. The goal is to give you a hands-on experience of predicting words based on context.
 
@@ -106,9 +153,10 @@ OK, so how does ChatGPT actually predict the next word? Whats the intuition behi
 
 1.  First, the text is **broken into tokens**. These are usually words, but can be fragments of words
 2.  Next, the model tries to **represent each token with an embedding** (a list of numbers that encodes the word's meaning).
-3.  Then, the model repeatedly **updates the meaning** of each token based on the surrounding context
-4.  Each time it updates the meaning, it will also **bake world knowledge** into the meaning
-5.  Finally, the model **predicts the next word** based on the meaning of the text so far
+3.  Then, the model repeatedly
+    1.  **updates the meaning** of each token based on the surrounding context
+    2.  Each time it updates the meaning, it will also **bake world knowledge** into the meaning
+4.  Finally, the model **predicts the next word** based on the meaning of the text so far
 
 Understanding each of these steps in more detail can help you understand how ChatGPT works and what its strengths and limitations are.
 
@@ -259,6 +307,24 @@ Below is a complete interactive diagram of the model, where you can see exactly 
 Conclusion: What Have Language Models Learned?
 ----------------------------------------------
 
+*   **Consequences from data**
+    *   Biases reflected in model
+    *   Efficacy of prompting
+*   **Consequences from architecture**
+    *   Vastly improved performance over longer pieces of text
+    *   Difficult to parse very large amounts of data, computational explosion vs RNNs
+    *   Has issues with precise rules, eg parentheses matching or arithmetic vs reasoning models
+    *   Difficult to validate data from model vs knowledge graphs
+
 Under Construction
+
+To do/fix
+---------
+
+*   Narrative clarity
+*   Condensing information
+*   Preserving technical accuracy while keeping it accessible and as complete as possible
+*   Provide actionable insights
+*   Maybe add some information about new developments
 
 var pushOrigin = '\*' // if we are on centipede5.github.io updata if (window.location.hostname == 'centipede5.github.io') { pushOrigin = 'https://centipede5.github.io' } const showRisidualsButton = document.getElementById('showRisiduals'); showRisidualsButton.addEventListener('click', function(e){ // check button e.target.classList.toggle('btn-primary'); e.target.classList.toggle('btn-secondary'); e.target.innerHTML = e.target.innerHTML == 'Show Residuals' ? 'Hide Residuals' : 'Show Residuals'; // signal iframe const iframe = document.getElementById('modeliframe'); const message = { type: 'show\_loss', } iframe.contentWindow.postMessage(message, pushOrigin); //scroll to modeliframe iframe.scrollIntoView(); }); const startGradientDescentButton = document.getElementById('startGradientDescent'); startGradientDescentButton.addEventListener('click', function(e){ // signal iframe const iframe = document.getElementById('modeliframe'); const message = { type: 'start\_gradient\_descent', } iframe.contentWindow.postMessage(message, pushOrigin); //scroll to modeliframe iframe.scrollIntoView(); }); const testModelButton = document.getElementById('testModel'); testModelButton.addEventListener('click', function(e){ // signal iframe const iframe = document.getElementById('modeliframe'); const message = { type: 'generate\_data', } iframe.contentWindow.postMessage(message, pushOrigin); //scroll to modeliframe iframe.scrollIntoView(); });

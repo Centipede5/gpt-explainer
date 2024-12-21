@@ -47,6 +47,9 @@ async function predictNextWord() {
     const sentence = document.getElementById("sentence").value.trim();
     const response = await query({
         inputs: sentence,
+        parameters: {
+            max_new_tokens: 50,
+        }
     });
     output = response[0].generated_text;
     // typing effect
